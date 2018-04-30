@@ -1,0 +1,23 @@
+REG   4
+INM   8
+DIR   10
+PORT  2
+-
+17
+MOV   NS  2   0000               REG    REG
+NOT   NS  2   0001               REG    REG
+ADD   NS  3   0010               REG    REG   REG
+SUB   NS  3   0011               REG    REG   REG
+AND   NS  3   0100               REG    REG   REG
+OR    NS  3   0101               REG    REG   REG
+NEG1  NS  2   0110               REG    REG
+NEG2  NS  2   0111               REG    REG
+LI    NS  2   1000               REG    INM
+JUMP  S   1   100100             DIR
+BEZ   S   1   100101             DIR
+BNZ   S   1   100110             DIR
+LOAD  NS  2   100111             PORT   REG
+STRE  NS  2   101000             PORT   REG
+STRI  NS  2   101001             PORT   INM
+JAL   S   1   101010             DIR
+RET   NS  0   1010110000000000
