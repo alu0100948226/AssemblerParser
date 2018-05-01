@@ -2,10 +2,12 @@
 #include "../headers/instr.hpp"
 #include "../headers/label.hpp"
 #include "../headers/parameter.hpp"
+#include "../headers/assembler.hpp"
 #include <cmath>
 #include <cassert>
 #include <string>
 #include <vector>
+#include <fstream>
 //LIBS cassert
 //LIBS cmath
 //LIBS string
@@ -16,13 +18,16 @@
 //TODO
 
 /**/
+/*
 std::vector<Instr> tableOfInstr;
 std::vector<Label> tableOfLabel;
 std::vector<std::string> program;
 int counter = 0;
-
+*/
 
 /**/
+
+/*
 int extractInt(const std::string& tok){
   int result = 0;
   int inx = tok.size()-1;
@@ -126,7 +131,13 @@ void decodeInstruction(std::string instr){
     std::cout << "EL TOKEN: " << token << " NO ES UNA INSTRUCCIÓN O UNA ETIQUETA\n";
 }
 
+*/
+
 int main( int argc, char * argv[]){
-  program.resize(1024);
+  Assembler g01(1024, "resources/instr_set.is");
+  g01.printInstr(std::cout);
+  //program.resize(1024);
+  //g01.buildProgram("resources/test");
+  //g01.writeMachineCode();
 
 }

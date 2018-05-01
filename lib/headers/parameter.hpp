@@ -10,9 +10,11 @@ private:
   unsigned int    size_;
 
 public:
+  Parameter();
   Parameter(unsigned int size, std::string t);
   ~Parameter();
 
+  Parameter& operator=(const Parameter& other);
   std::string type() const;
   unsigned int size() const;
 

@@ -1,41 +1,53 @@
 #include "../headers/assembler.hpp"
 
-Assembler::Assembler(unsigned int memprogsize, char * argv[] ){
+
+
+Assembler::Assembler(unsigned int memprogsize, std::string intrsFormat ){
   std::vector<Parameter> pTypes;
   std::string junk;
 
 
-  std::ifstream instrFile(argv, std::ifstream::in);
+  std::ifstream instrFile( intrsFormat.c_str(), std::ifstream::in);
 
   if(instrFile.is_open()){
     while(instrFile.peek() != '-'){
+      std::cout << "READING DATATYPES\n"; //DEBUG
       std::string type;
       int size;
-      instrFile >> type >> std::ws >> junk >> std::ws >> size;
+      instrFile >> type >> std::ws >> size >> std::ws;
+      std::cout << "Tipo: " << type << " SIZE: " << size << "\n"; //DEBUG
       Parameter p(size,type);
       pTypes.push_back(p);
     }
 
+    std::cout << "READING NoI\n"; //DEBUG
     unsigned int nInstr;
-    instrFile >> nInstr;
+    instrFile >> junk >> nInstr >> std::ws;
+    std::cout << nInstr << '\n';
 
+    tableOfInstr.resize(nInstr);
 
     std::string instrName, sens, instrEncoding, type;
     bool sensitive;
     unsigned int nParameters;
 
-
+    std::cout << "READING INSTRUCTIONS\n"; //DEBUG
     for(int i = 0; i < nInstr; i++){
+      std::cout << "\nREADING INSTRUCTIONS" << std::endl; //DEBUG
       instrFile >> instrName >> std::ws >> sens >> std::ws >> nParameters >> std::ws >> instrEncoding >> std::ws;
 
       if (sens == "S")  sensitive = true;
       else              sensitive = false;
-      Instr inst(instrName, sensitive, nParameters, instrEncoding);
+      Instr inst(instrName, instrEncoding, sensitive, nParameters );
+
+      std::cout << instrName << ' ' << sens << ' ' << nParameters << ' ' << instrEncoding << '\n'; //DEBUG
 
       for(int count = 0; count < nParameters; count++){
         instrFile >> type >> std::ws;
+
+        std::cout << type << " IS PARAMETER: " << count << '\n'; //DEBUG
         int inx = 0;
-        while(type != pTypes[inx].type())
+        while(inx < pTypes.size() && type != pTypes[inx].type())
           inx++;
         if(inx < pTypes.size())
           inst.push_parameter(pTypes[inx]);
@@ -48,10 +60,6 @@ Assembler::Assembler(unsigned int memprogsize, char * argv[] ){
     program.resize(memProgSize);
 
   }
-
-
-
-
 }
 
 Assembler::~Assembler(){
@@ -59,12 +67,43 @@ Assembler::~Assembler(){
 }
 
 
-void Assembler::buildProgram(){
+void Assembler::buildProgram(std::string inFileName){
+  std::ifstream inFile(inFileName.c_str(), std::ifstream::in);
+  std::string token;
+
+  if(inFile.is_open()){
+    while(!inFile.eof()){
+      std::string instr;
+      while(inFile.peek() != '\n'){
+        std::string input;
+        inFile >> input;
+        instr += input;
+      }
+      decodeInstruction(instr);
+    }
+
+
+
+    for(int i = 0; i < jumps.size(); i++){
+      int n = program[jumps[i]].find_first_of(' ',0);
+      token = program[jumps[i]].substr(0, n);
+
+      int inx = 0;
+      while(token != tableOfInstr[i].name() )
+        inx++;
+      if ( inx < tableOfInstr.size())
+        encodeInstr(inx, program[jumps[i]], program[jumps[i]]);
+      else
+        std::cout << "Error. No existe la instrucción: " << program[jumps[i]] << '\n';
+    }
+  }
 
 }
 
-void Assembler::writeMachineCode(/*File*/){
-
+void Assembler::writeMachineCode(){ //TODO a fichero de salida
+  for(int i = 0; i <= counter; i++){
+    std::cout << program[i] << '\n';
+  }
 }
 
 
@@ -108,7 +147,7 @@ std::string Assembler::binaryStr(int num, int n){
 
 std::string Assembler::encode(std::string token, Parameter par){
   std::string result;
-  if(par.type() != Type::dir){
+  if(par.type() != "DIR"){
     int num = extractInt(token);
     result = binaryStr(num,par.size());
   }
@@ -170,4 +209,12 @@ void Assembler::decodeInstruction(std::string instr){
 
   else
     std::cout << "EL TOKEN: " << token << " NO ES UNA INSTRUCCIÓN O UNA ETIQUETA\n";
+}
+
+
+
+std::ostream& Assembler::printInstr(std::ostream& os){
+  for(int i = 0; i < tableOfInstr.size(); i++)
+    tableOfInstr[i].print(os);
+  os << '\n';
 }
