@@ -1,3 +1,7 @@
 ADD R1, R2, R3
 SUB R1, R2, R3
-LI  R1, 128
+LI R1, 128
+JUMP :salto
+ADD R8, R9, R10
+:salto
+LI R1, 255

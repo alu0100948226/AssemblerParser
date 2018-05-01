@@ -134,10 +134,15 @@ void decodeInstruction(std::string instr){
 */
 
 int main( int argc, char * argv[]){
+  std::cout << "\n\n-------------------------------BUILDING MACHINE---------------------------\n\n";
   Assembler g01(1024, "resources/instr_set.is");
   g01.printInstr(std::cout);
+
+  std::cout << "\n\n-----------------------FINISHED BUILDING MACHINE---------------------------\n\n";
   //program.resize(1024);
-  //g01.buildProgram("resources/test");
-  //g01.writeMachineCode();
+
+  g01.buildProgram("resources/test");
+  g01.printLabels(std::cout);
+  g01.writeMachineCode();
 
 }

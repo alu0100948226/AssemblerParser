@@ -29,6 +29,7 @@ public:
   void writeMachineCode();
 
   std::ostream& printInstr(std::ostream& os);
+  std::ostream& printLabels(std::ostream& os);
 
 
 private:
