@@ -1,3 +1,4 @@
+CC = g++
 CFLAGS = -std=c++11
 CLINKER_FLAGS =
 
@@ -6,15 +7,21 @@ SRC = lib/sources
 OBJ = lib/obj
 BIN = bin
 
+OBJECTS = $(OBJ)/myMain.o \
+          $(OBJ)/assembler.o \
+          $(OBJ)/instr.o \
+          $(OBJ)/label.o \
+          $(OBJ)/parameter.o \
 
-OBJECTS = $(patsubst %,$(OBJ)/%,$(notdir $(SOURCE:.cpp=.o)))
+#MAIN = $(OBJ)/main.o
+#OBJECTS = $(patsubst %,$(OBJ)/%,$(notdir $(SOURCE:.cpp=.o)))
 SOURCE = $(wildcard $(SRC)/*.cpp)
 
 $(OBJ)/%.o: $(SRC)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BIN)/$(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) $(CLINKER_FLAGS) -o $@ $^
+$(BIN)/$(TARGET): $(MAIN) $(OBJECTS)
+	$(CC) $(CFLAGS) $(CLINKER_FLAGS) $^ -o $@
 
 help :
 	@echo "src = $(SOURCE)"

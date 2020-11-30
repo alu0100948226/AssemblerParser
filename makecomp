@@ -1,2 +1,0 @@
-cc -std=c++11 -c lib/sources/assembler.cpp -o lib/obj/assembler.o
-Makefile:14: fallo en las instrucciones para el objetivo 'lib/obj/assembler.o'
