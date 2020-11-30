@@ -21,6 +21,7 @@ Instr& Instr::operator=(const Instr& other){
   for(int i = 0; i < nPar_; i++){
     par_[i] = other.par(i);
   }
+  return *this;
 }
 
 std::string Instr::name() const { return name_; }
@@ -46,4 +47,5 @@ std::ostream& Instr::print(std::ostream& os){
   for(int i = 0; i < nPar_; i++)
     os << ' ' << std::setw(6) << par_[i].type();
   os << '\n';
+  return os;
 }

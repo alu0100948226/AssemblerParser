@@ -246,6 +246,7 @@ std::ostream& Assembler::printInstr(std::ostream& os){
   for(int i = 0; i < tableOfInstr.size(); i++)
     tableOfInstr[i].print(os);
   os << '\n';
+  return os;
 }
 
 std::ostream& Assembler::printLabels(std::ostream& os){
@@ -253,4 +254,5 @@ std::ostream& Assembler::printLabels(std::ostream& os){
   for(int i = 0; i < tableOfLabel.size(); i++){
     os << tableOfLabel[i].label() << ' ' << tableOfLabel[i].dir() << '\n';
   }
+  return os;
 }

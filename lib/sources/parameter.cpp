@@ -6,6 +6,7 @@ Parameter::~Parameter(){}
 Parameter& Parameter::operator=(const Parameter& other){
   type_ = other.type();
   size_ = other.size();
+  return *this;
 }
 
 std::string Parameter::type() const { return type_; }
