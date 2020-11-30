@@ -14,15 +14,17 @@
 
 class Assembler {
 private:
-  std::vector<Instr>        tableOfInstr;
-  std::vector<Label>        tableOfLabel;
-  std::vector<int>          jumps;
+  std::vector<Instr>        tableOfInstr_;
+  std::vector<Label>        tableOfLabel_;
+  std::vector<int>          jumps_;
   std::vector<std::string>  program;
-  unsigned int              counter;
-  unsigned int              memProgSize;
+
+  std::string               outfilename_;
+  unsigned int              counter_;
+  unsigned int              memProgSize_;
 
 public:
-  Assembler(unsigned int memprogsize, std::string intrsFormat );  //TODO pasar parámetros
+  Assembler(unsigned int memprogsize, std::string intrsFormat, std::string outfile );  //TODO pasar parámetros
   ~Assembler();
 
   void buildProgram(std::string inFileName);

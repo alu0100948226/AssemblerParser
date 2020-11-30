@@ -2,7 +2,7 @@
 
 
 
-Assembler::Assembler(unsigned int memprogsize, std::string intrsFormat ){
+Assembler::Assembler(unsigned int memprogsize, std::string intrsFormat, std::string outname): outfilename_(outname){
   std::vector<Parameter> pTypes;
   std::string junk;
 
@@ -24,7 +24,7 @@ Assembler::Assembler(unsigned int memprogsize, std::string intrsFormat ){
     unsigned int nInstr;
     instrFile >> junk >> nInstr >> std::ws;
 
-    tableOfInstr.resize(nInstr);
+    tableOfInstr_.resize(nInstr);
 
     std::string instrName, sens, instrEncoding, type;
     bool sensitive;
@@ -52,11 +52,11 @@ Assembler::Assembler(unsigned int memprogsize, std::string intrsFormat ){
           inst.push_parameter(pTypes[inx]);
       }
 
-      tableOfInstr[i] = inst;
+      tableOfInstr_[i] = inst;
     }
 
-    memProgSize = memprogsize;
-    program.resize(memProgSize);
+    memProgSize_ = memprogsize;
+    program.resize(memProgSize_);
     instrFile.close();
   }
 }
@@ -67,7 +67,7 @@ Assembler::~Assembler(){
 
 
 void Assembler::buildProgram(std::string inFileName){
-  counter = 0;
+  counter_ = 0;
   std::cout << "BUILDING PROGRAM\n"; //DEBUG
   std::ifstream inFile(inFileName.c_str(), std::ifstream::in);
   std::string token;
@@ -88,30 +88,35 @@ void Assembler::buildProgram(std::string inFileName){
 
 
 
-    for(int i = 0; i < jumps.size(); i++){
-      int n = program[jumps[i]].find_first_of(' ',0);
-      token = program[jumps[i]].substr(0, n);
-      std::string instrJump = program[jumps[i]];
+    for(int i = 0; i < jumps_.size(); i++){
+      int n = program[jumps_[i]].find_first_of(' ',0);
+      token = program[jumps_[i]].substr(0, n);
+      std::string instrJump = program[jumps_[i]];
 
       std::cout << "J INSTR: " << token << '\n'; //DEBUG
       int inx = 0;
-      while(inx < tableOfInstr.size() && token != tableOfInstr[inx].name() )
+      while(inx < tableOfInstr_.size() && token != tableOfInstr_[inx].name() )
         inx++;
-      if ( inx < tableOfInstr.size()){
-        program[jumps[i]] = "";
-        encodeInstr(inx, instrJump, program[jumps[i]]);
+      if ( inx < tableOfInstr_.size()){
+        program[jumps_[i]] = "";
+        encodeInstr(inx, instrJump, program[jumps_[i]]);
       }
       else
-        std::cout << "Error. No existe la instrucción: " << program[jumps[i]] << '\n';
+        std::cout << "Error. No existe la instrucción: " << program[jumps_[i]] << '\n';
     }
   }
 
 }
 
 void Assembler::writeMachineCode(){ //TODO a fichero de salida
-  for(int i = 0; i <= counter; i++){
+  std::cout << "Writing code to: " << outfilename_ << '\n';
+  std::ofstream outfile;
+  outfile.open(outfilename_);
+  for(int i = 0; i <= counter_; i++){
+    outfile << program[i] << '\n';
     std::cout << program[i] << '\n';
   }
+  outfile.close();
 }
 
 
@@ -170,10 +175,10 @@ std::string Assembler::encode(std::string token, Parameter par){
   else {
     int i = 0;
     std::cout << "ENCODING JUMP\n"; //DEBUG
-    while(token != tableOfLabel[i].label())
+    while(token != tableOfLabel_[i].label())
       i++;
-    if (i < tableOfLabel.size())
-      result = binaryStr(tableOfLabel[i].dir(), par.size());
+    if (i < tableOfLabel_.size())
+      result = binaryStr(tableOfLabel_[i].dir(), par.size());
     else
       std::cout << "NO EXISTE LA ETIQUETA: " << token << '\n';
   }
@@ -183,17 +188,17 @@ std::string Assembler::encode(std::string token, Parameter par){
 
 
 void Assembler::encodeInstr(int i, std::string instr, std::string& prog){
-  prog += tableOfInstr[i].encoding();
+  prog += tableOfInstr_[i].encoding();
   int nprev = instr.find_first_of(" ", 0);
-  for(unsigned inx = 0; inx < tableOfInstr[i].nPar() - 1; inx++){
+  for(unsigned inx = 0; inx < tableOfInstr_[i].nPar() - 1; inx++){
     int n = instr.find_first_of(",", nprev);
     std::string token = instr.substr(nprev+1, n - nprev - 1);
     std::cout << "DELIMITADORES: " << nprev << ' ' << n << '\n'; //DEBUG
-    prog += encode(token, tableOfInstr[i].par(inx));
+    prog += encode(token, tableOfInstr_[i].par(inx));
     nprev = n+1;
   }
   std::string token = instr.substr(nprev+1, instr.size() - nprev - 2);
-  prog += encode(token, tableOfInstr[i].par(tableOfInstr[i].nPar() - 1));
+  prog += encode(token, tableOfInstr_[i].par(tableOfInstr_[i].nPar() - 1));
 
 }
 
@@ -214,26 +219,26 @@ void Assembler::decodeInstruction(std::string instr){
   std::cout << "SEARCHING INSTRUCTION: " << token << '\n'; //DEBUG
 
   int i = 0;
-  while(i < tableOfInstr.size() && token != tableOfInstr[i].name() )
+  while(i < tableOfInstr_.size() && token != tableOfInstr_[i].name() )
     i++;
   std::cout << "FINISHED SEARCH\n"; //DEBUG
-  if ( i < tableOfInstr.size()){
+  if ( i < tableOfInstr_.size()){
     std::cout << "INSTRUCTION FOUND\n"; //DEBUG
-    if(!tableOfInstr[i].sensitive()){
-      encodeInstr(i, instr, program[counter]);
+    if(!tableOfInstr_[i].sensitive()){
+      encodeInstr(i, instr, program[counter_]);
     }
 
     else {
-      jumps.push_back(counter);
-      program[counter] = instr;
+      jumps_.push_back(counter_);
+      program[counter_] = instr;
     }
     isInstruction = true;
     std::cout << "INCREASING COUNTER\n"; //DEBUG
-    counter++;
+    counter_++;
   }
 
   else if ( token[0] == ':'){
-    tableOfLabel.push_back(Label(token, counter));
+    tableOfLabel_.push_back(Label(token, counter_));
   }
 
   else
@@ -243,16 +248,16 @@ void Assembler::decodeInstruction(std::string instr){
 
 
 std::ostream& Assembler::printInstr(std::ostream& os){
-  for(int i = 0; i < tableOfInstr.size(); i++)
-    tableOfInstr[i].print(os);
+  for(int i = 0; i < tableOfInstr_.size(); i++)
+    tableOfInstr_[i].print(os);
   os << '\n';
   return os;
 }
 
 std::ostream& Assembler::printLabels(std::ostream& os){
   os << "------------------------------LABELS------------------------------\n";
-  for(int i = 0; i < tableOfLabel.size(); i++){
-    os << tableOfLabel[i].label() << ' ' << tableOfLabel[i].dir() << '\n';
+  for(int i = 0; i < tableOfLabel_.size(); i++){
+    os << tableOfLabel_[i].label() << ' ' << tableOfLabel_[i].dir() << '\n';
   }
   return os;
 }
