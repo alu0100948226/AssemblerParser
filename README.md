@@ -54,3 +54,10 @@ STRI  NS  2   101001             PORT   INM
 JAL   S   1   101010             DIR
 RET   NS  0   1010110000000000
 ```
+
+## Todo ##
+
+- Fill instructions if size is not reached by parameters + opcode
+- Add way to include fillers for specific instr
+- Fx instr file not ending in blank line hanging app
+- Format output for progfile.dat xxxx_xxxx_xxxx_xxxx
