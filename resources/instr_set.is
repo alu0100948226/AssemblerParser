@@ -1,9 +1,10 @@
 REG   4
 INM   8
 DIR   10
+ADDR  8
 PORT  2
 -
-17
+19
 MOV   NS  2   0000               REG    REG
 NOT   NS  2   0001               REG    REG
 ADD   NS  3   0010               REG    REG   REG
@@ -21,3 +22,5 @@ STRE  NS  2   101000             PORT   REG
 STRI  NS  2   101001             PORT   INM
 JAL   S   1   101010             DIR
 RET   NS  0   1010110000000000
+MEMR  NS  2   110000               PORT   ADDR
+MEMW  NS  2   110001               PORT   ADDR
