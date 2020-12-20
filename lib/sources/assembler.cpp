@@ -166,7 +166,10 @@ std::string Assembler::binaryStr(int num, int n){
 std::string Assembler::encode(std::string token, Parameter par){
   std::cout << "ENCODING PARAMETER: " << par.type() << " TOKEN: " << token << '\n'; //DEBUG
   std::string result;
-  if(par.type() != "DIR"){
+  if(par.type() == "BLANK"){
+    result = binaryStr(0, par.size());
+  }
+  else if(par.type() != "DIR"){
     int num = extractInt(token);
     std::cout << "NUM: " << num << '\n';
     result = binaryStr(num,par.size());
