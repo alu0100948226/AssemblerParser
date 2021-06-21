@@ -1,4 +1,4 @@
-#include "../headers/label.hpp"
+#include "label.hpp"
 
 Label::Label(std::string labelName, int counter): label_(labelName), dir_(counter) {}
 

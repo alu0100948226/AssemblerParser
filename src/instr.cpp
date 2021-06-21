@@ -1,4 +1,4 @@
-#include "../headers/instr.hpp"
+#include "instr.hpp"
 
 Instr::Instr() {}
 

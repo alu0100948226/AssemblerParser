@@ -1,4 +1,4 @@
-#include "../headers/assembler.hpp"
+#include "assembler.hpp"
 
 
 
@@ -111,7 +111,7 @@ void Assembler::buildProgram(std::string inFileName){
 void Assembler::writeMachineCode(){ //TODO a fichero de salida
   std::cout << "Writing code to: " << outfilename_ << '\n';
   std::ofstream outfile;
-  outfile.open(outfilename_);
+  outfile.open(outfilename_.c_str());
   for(int i = 0; i <= counter_; i++){
     outfile << program[i] << '\n';
     std::cout << program[i] << '\n';

@@ -1,8 +1,8 @@
 #include <iostream>
-#include "../headers/instr.hpp"
-#include "../headers/label.hpp"
-#include "../headers/parameter.hpp"
-#include "../headers/assembler.hpp"
+#include "instr.hpp"
+#include "label.hpp"
+#include "parameter.hpp"
+#include "assembler.hpp"
 #include <cmath>
 #include <cassert>
 #include <string>

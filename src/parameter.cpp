@@ -1,4 +1,4 @@
-#include "../headers/parameter.hpp"
+#include "parameter.hpp"
 Parameter::Parameter(): type_(""), size_(0){}
 Parameter::Parameter(unsigned int size, std::string t): type_(t), size_(size){}
 Parameter::~Parameter(){}
